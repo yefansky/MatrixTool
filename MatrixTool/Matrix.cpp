@@ -1,4 +1,5 @@
 #include "Matrix.h"
+#include <typeindex>
 
 Matrix Matrix::operator * (const Matrix& rM)
 {
@@ -12,7 +13,36 @@ Matrix Matrix::operator * (const Matrix& rM)
 			{
 				result.Value(i, j) += Value(i, k) * rM.Value(k, j);
 			}
+
 	return result;
+}
+
+Matrix Matrix::Transpose() const
+{
+	Matrix m = *this;
+	
+	for (int i = 0; i < m_nRow; i++)
+		for (int j = 0; j < m_nCol && j < i; j++)
+			std::swap(m.Value(i,j), m.Value(j, i));
+	return m;
+}
+
+Matrix Matrix::Conjugation() const
+{
+	Matrix m = *this;
+
+	for (int i = 0; i < m_nRow; i++)
+		for (int j = 0; j < m_nCol && j < i; j++)
+		{
+			auto& rValue = m.Value(i, j);
+			rValue = rValue.Conjugation();
+		}
+	return m;
+}
+
+Matrix Matrix::Hermite() const
+{
+	return Conjugation().Transpose();
 }
 
 std::string Matrix::ToString()
@@ -55,6 +85,19 @@ Matrix Matrix::F(int n)
 	return m;
 }
 
+Matrix Matrix::F(int n, int fn)
+{
+	Matrix m(n);
+	ComplexIndex w = W(fn);
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+		{
+			m.Value(i, j) = w.Pow(i * j).ToComplex();
+		}
+	return m;
+}
+
 Matrix Matrix::P(int n)
 {
 	Matrix m(n);
@@ -66,10 +109,9 @@ Matrix Matrix::P(int n)
 	return m;
 }
 
-Matrix Matrix::D(int n)
+Matrix Matrix::DiagonalW(int n, const ComplexIndex& w)
 {
 	Matrix m(n);
-	ComplexIndex w = W(n);
 	for (int i = 0; i < n; i++)
 		m.Value(i, i) = w.Pow(i).ToComplex();
 	return m;

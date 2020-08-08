@@ -60,13 +60,17 @@ public:
 	}
 
 	Matrix operator * (const Matrix& rM);
+	Matrix Transpose() const;
+	Matrix Conjugation() const;
+	Matrix Hermite() const;
 
 	std::string ToString();
 
 	static Matrix I(int n);
 	static Matrix F(int n);
+	static Matrix F(int n, int fn);
 	static Matrix P(int n);
-	static Matrix D(int n);
+	static Matrix DiagonalW(int n, const ComplexIndex& w);
 };
 
 Matrix operator - (const Matrix& m);

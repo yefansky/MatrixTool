@@ -2,7 +2,7 @@
 #include <string>
 
 class ComplexIndex;
-const double cf_PI = 3.14159265358979323846264338327950288419716939937510582097944592307816406286208998;
+const double c_fPI = 3.14159265358979323846264338327950288419716939937510582097944592307816406286208998;
 
 class Complex
 {
@@ -19,10 +19,11 @@ public:
 	Complex operator + (const Complex& c);
 	Complex operator += (const Complex& c);
 	Complex operator * (const Complex& c);
+	Complex Conjugation() const;
 
-	ComplexIndex ToIndex();
-	Complex Pow(double fN);
-	std::string ToString();
+	ComplexIndex ToIndex() const;
+	Complex Pow(double fN) const;
+	std::string ToString() const;
 };
 
 Complex operator -(const Complex& c);
@@ -35,9 +36,9 @@ public:
 
 	ComplexIndex(double fR, double fTheta) : m_fR(fR), m_fTheta(fTheta) {}
 
-	ComplexIndex Pow(double fN);
-	Complex ToComplex();
-	std::string ToString();
+	ComplexIndex Pow(double fN) const;
+	Complex ToComplex() const;
+	std::string ToString() const;
 };
 
 

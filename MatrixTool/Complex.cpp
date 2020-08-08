@@ -36,21 +36,26 @@ Complex Complex::operator * (const Complex& c)
 	return Complex(m_fA * c.m_fA - m_fB * c.m_fB, m_fB * c.m_fA + m_fA * c.m_fB);
 }
 
-ComplexIndex Complex::ToIndex()
+Complex Complex::Conjugation() const
+{
+	return Complex(m_fA, -m_fB);
+}
+
+ComplexIndex Complex::ToIndex() const
 {
 	double fR = sqrt(m_fA * m_fA + m_fB * m_fB);
 	double fA = atan2(m_fB, m_fA);
 	return ComplexIndex(fR, fA);
 }
 
-Complex Complex::Pow(double fN)
+Complex Complex::Pow(double fN) const
 {
 	auto Index = ToIndex();
 	Index.Pow(fN);
 	return Index.ToComplex();
 }
 
-std::string Complex::ToString()
+std::string Complex::ToString() const
 {
 	std::string result;
 
@@ -66,7 +71,7 @@ std::string Complex::ToString()
 	{
 		if (Near(m_fB, -1))
 			result += "-";
-		else if (!result.empty())
+		else if (!result.empty() && m_fB > 0)
 			result += " + ";
 
 		if (!Near(fabs(m_fB), 1))
@@ -89,19 +94,19 @@ Complex operator -(const Complex& c)
 	return result;
 }
 
-ComplexIndex ComplexIndex::Pow(double fN)
+ComplexIndex ComplexIndex::Pow(double fN) const
 {
 	double fR = pow(m_fR, fN);
 	double fAngle = m_fTheta * fN;
 	return ComplexIndex(fR, fAngle);
 }
 
-Complex ComplexIndex::ToComplex()
+Complex ComplexIndex::ToComplex() const
 {
 	return Complex(m_fR * cos(m_fTheta), m_fR * sin(m_fTheta));
 }
 
-std::string ComplexIndex::ToString()
+std::string ComplexIndex::ToString() const
 {
 	std::string result;
 	if (fabs(m_fR) == 0)
@@ -117,8 +122,8 @@ std::string ComplexIndex::ToString()
 		result = std::to_string(m_fR);
 	}
 
-	double fA = fmod(m_fTheta, (2 * cf_PI));
-	if (NearZero(fA) || NearZero(fabs(fA) - 2 * cf_PI))
+	double fA = fmod(m_fTheta, (2 * c_fPI));
+	if (NearZero(fA) || NearZero(fabs(fA) - 2 * c_fPI))
 	{
 		// e
 	}
@@ -139,5 +144,5 @@ ComplexIndex operator -(const ComplexIndex& rIndex)
 
 ComplexIndex W(int n)
 {
-	return ComplexIndex(1.0f, 2 * cf_PI / n);
+	return ComplexIndex(1.0f, 2 * c_fPI / n);
 }
