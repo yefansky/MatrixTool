@@ -28,7 +28,7 @@ ComplexMatrix FFT::FFTMatrix(int n)
 	return PartitionedMatrix<Complex>::Build(
 		I, D,
 		I, -D
-	).Hermite() * PartitionedMatrix<Complex>::Build(
+	) * PartitionedMatrix<Complex>::Build(
 		F, Zero,
 		Zero, F
 	) * P;
