@@ -1,14 +1,17 @@
 #pragma once
 
 #include "Matrix.h"
+#include "Complex.h"
+
+typedef Matrix<Complex> ComplexMatrix;
 
 class FFT
 {
 public:
-	static Matrix FourierTransformMatrix(int n);
-	static Matrix FFTMatrix(int n);
+	static ComplexMatrix FourierTransformMatrix(int n);
+	static ComplexMatrix FFTMatrix(int n);
 private:
-	static Matrix ParityPermutationMatrix(int n);
-	static Matrix DiagonalW(int n, const ComplexIndex& w);
+	static ComplexMatrix ParityPermutationMatrix(int n);
+	static ComplexMatrix DiagonalW(int n, const ComplexIndex& w);
 };
 

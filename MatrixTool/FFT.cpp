@@ -1,8 +1,8 @@
 #include "FFT.h"
 
-Matrix FFT::FourierTransformMatrix(int n)
+ComplexMatrix FFT::FourierTransformMatrix(int n)
 {
-	Matrix m(n);
+	ComplexMatrix m(n);
 	auto W = ComplexIndex(1, 2 * c_fPI / n);
 
 	for (int i = 0; i < n; i++)
@@ -13,30 +13,30 @@ Matrix FFT::FourierTransformMatrix(int n)
 	return m;
 }
 
-Matrix FFT::FFTMatrix(int n)
+ComplexMatrix FFT::FFTMatrix(int n)
 {
 	if (n == 2)
 		return FourierTransformMatrix(2);
 	int d = n / 2;
 	const auto F = FourierTransformMatrix(d);
 	const auto W = ComplexIndex(1, 2 * c_fPI / n);
-	const auto I = Matrix::I(d);
+	const auto I = ComplexMatrix::I(d);
 	const auto D = FFT::DiagonalW(d, W);
-	const auto Zero = Matrix(d);
+	const auto Zero = ComplexMatrix(d);
 	const auto P = FFT::ParityPermutationMatrix(n);
 
-	return PartitionedMatrix::Build(
+	return PartitionedMatrix<Complex>::Build(
 		I, D,
 		I, -D
-	) * PartitionedMatrix::Build(
+	).Hermite() * PartitionedMatrix<Complex>::Build(
 		F, Zero,
 		Zero, F
 	) * P;
 }
 
-Matrix FFT::ParityPermutationMatrix(int n)
+ComplexMatrix FFT::ParityPermutationMatrix(int n)
 {
-	Matrix m(n);
+	ComplexMatrix m(n);
 	for (int i = 0; i < n / 2; i++)
 	{
 		m.Value(i, i * 2) = 1;
@@ -45,9 +45,9 @@ Matrix FFT::ParityPermutationMatrix(int n)
 	return m;
 }
 
-Matrix FFT::DiagonalW(int n, const ComplexIndex& w)
+ComplexMatrix FFT::DiagonalW(int n, const ComplexIndex& w)
 {
-	Matrix m(n);
+	ComplexMatrix m(n);
 	for (int i = 0; i < n; i++)
 		m.Value(i, i) = w.Pow(i);
 	return m;
