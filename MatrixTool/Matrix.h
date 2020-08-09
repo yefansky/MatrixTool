@@ -12,6 +12,8 @@ private:
 	Complex* m_pcData = nullptr;
 
 public:
+	Matrix() {}
+
 	Matrix(int nR, int nC) : m_nRow(nR), m_nCol(nC) 
 	{
 		assert(m_nRow > 0);
@@ -22,15 +24,26 @@ public:
 
 	Matrix(int n) : Matrix(n, n) {}
 
-	Matrix(const Matrix& m)
+	Matrix(const Matrix& m) : m_nRow(m.m_nRow), m_nCol(m.m_nCol)
 	{
-		m_nRow = m.m_nRow;
-		m_nCol = m.m_nCol;
+		if (m_pcData)
+			delete[] m_pcData;
 
 		m_pcData = new Complex[m_nRow * m_nCol];
-		for (int i = 0; i < m_nRow; i++)
-			for (int j = 0; j < m_nCol; j++)
-				Value(i, j) = m.Value(i, j);
+
+		if (m_pcData)
+			for (int i = 0; i < m_nRow; i++)
+				for (int j = 0; j < m_nCol; j++)
+					Value(i, j) = m.Value(i, j);
+	}
+
+	Matrix(Matrix&& m) : m_nRow(m.m_nRow), m_nCol(m.m_nCol)
+	{
+		if (m_pcData)
+			delete[] m_pcData;
+
+		m_pcData = m.m_pcData;
+		m.m_pcData = nullptr;
 	}
 
 	~Matrix()
@@ -41,6 +54,22 @@ public:
 			m_pcData = nullptr;
 		}
 		m_nRow = m_nCol = 0;
+	}
+
+	Matrix& operator =(Matrix&& m)
+	{
+		if (m_pcData)
+			delete[] m_pcData;
+		m_pcData = nullptr;
+		m_nRow = m.m_nRow;
+		m_nCol = m.m_nCol;
+		m_pcData = new Complex[m_nRow * m_nCol];
+	
+		if (m_pcData)
+			for (int i = 0; i < m_nRow; i++)
+				for (int j = 0; j < m_nCol; j++)
+					Value(i, j) = m.Value(i, j);
+		return *this;
 	}
 
 	Complex& Value(int i, int j)
@@ -67,10 +96,6 @@ public:
 	std::string ToString();
 
 	static Matrix I(int n);
-	static Matrix F(int n);
-	static Matrix F(int n, int fn);
-	static Matrix P(int n);
-	static Matrix DiagonalW(int n, const ComplexIndex& w);
 };
 
 Matrix operator - (const Matrix& m);
@@ -91,7 +116,7 @@ private:
 	}
 
 public:	
-	static Matrix Build(const Matrix&& A, const Matrix&& B, const Matrix&& C, const Matrix&& D)
+	static Matrix Build(const Matrix& A, const Matrix& B, const Matrix& C, const Matrix& D)
 	{
 		assert(A.m_nRow == B.m_nRow);
 		assert(C.m_nRow == D.m_nRow);
