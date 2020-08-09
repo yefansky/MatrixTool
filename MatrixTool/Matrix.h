@@ -143,12 +143,17 @@ public:
 
 	std::string ToString();
 
-	static Matrix I(int n)
+	static Matrix Identity(int n)
 	{
 		Matrix m(n);
 		for (int i = 0; i < n; i++)
 			m.Value(i, i) = 1;
 		return m;
+	}
+
+	static Matrix Zero(int n)
+	{
+		return Matrix(n);
 	}
 };
 

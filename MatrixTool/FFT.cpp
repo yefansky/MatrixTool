@@ -20,9 +20,9 @@ ComplexMatrix FFT::FFTMatrix(int n)
 	int d = n / 2;
 	const auto F = FourierTransformMatrix(d);
 	const auto W = ComplexIndex(1, 2 * c_fPI / n);
-	const auto I = ComplexMatrix::I(d);
+	const auto I = ComplexMatrix::Identity(d);
 	const auto D = FFT::DiagonalW(d, W);
-	const auto Zero = ComplexMatrix(d);
+	const auto Zero = ComplexMatrix::Zero(d);
 	const auto P = FFT::ParityPermutationMatrix(n);
 
 	return PartitionedMatrix<Complex>::Build(
