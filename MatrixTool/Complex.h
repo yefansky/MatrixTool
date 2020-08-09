@@ -14,14 +14,16 @@ public:
 	Complex() {}
 	Complex(double fA) : m_fA(fA), m_fB(0) {}
 	Complex(double fA, double fB) : m_fA(fA), m_fB(fB) {}
+	Complex(const ComplexIndex& rIndex);
 
-	Complex operator = (double fR);
+	Complex& operator = (double fR);
 	Complex operator + (const Complex& c);
-	Complex operator += (const Complex& c);
+	Complex& operator += (const Complex& c);
 	Complex operator * (const Complex& c);
-	Complex Conjugation() const;
+	bool operator == (const Complex & c) const;
+	bool operator != (const Complex& c) const;
 
-	ComplexIndex ToIndex() const;
+	Complex Conjugation() const;
 	Complex Pow(double fN) const;
 	std::string ToString() const;
 };
@@ -35,10 +37,13 @@ public:
 	double m_fTheta = 0;
 
 	ComplexIndex(double fR, double fTheta) : m_fR(fR), m_fTheta(fTheta) {}
+	ComplexIndex(const Complex& rComplex) : m_fR(sqrt(rComplex.m_fA* rComplex.m_fA + rComplex.m_fB * rComplex.m_fB)), m_fTheta(atan2(rComplex.m_fB, rComplex.m_fA)) {}
 
 	ComplexIndex Pow(double fN) const;
-	Complex ToComplex() const;
 	std::string ToString() const;
+
+	bool operator == (const ComplexIndex& c) const;
+	bool operator != (const ComplexIndex& c) const;
 };
 
 

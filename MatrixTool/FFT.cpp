@@ -8,7 +8,7 @@ Matrix FFT::FourierTransformMatrix(int n)
 	for (int i = 0; i < n; i++)
 		for (int j = 0; j < n; j++)
 		{
-			m.Value(i, j) = W.Pow(i * j).ToComplex();
+			m.Value(i, j) = W.Pow(i * j);
 		}
 	return m;
 }
@@ -49,6 +49,6 @@ Matrix FFT::DiagonalW(int n, const ComplexIndex& w)
 {
 	Matrix m(n);
 	for (int i = 0; i < n; i++)
-		m.Value(i, i) = w.Pow(i).ToComplex();
+		m.Value(i, i) = w.Pow(i);
 	return m;
 }

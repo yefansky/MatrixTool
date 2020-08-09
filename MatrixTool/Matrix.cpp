@@ -17,6 +17,15 @@ Matrix Matrix::operator * (const Matrix& rM)
 	return result;
 }
 
+bool Matrix::operator == (const Matrix& rM) const
+{
+	for (int i = 0; i < m_nRow; i++)
+		for (int j = 0; j < m_nCol; j++)
+			if (Value(i, j) != rM.Value(i, j))
+				return false;
+	return true;
+}
+
 Matrix Matrix::Transpose() const
 {
 	Matrix m = *this;

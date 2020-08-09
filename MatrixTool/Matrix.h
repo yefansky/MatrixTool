@@ -89,6 +89,8 @@ public:
 	}
 
 	Matrix operator * (const Matrix& rM);
+	bool operator == (const Matrix& rM) const;
+
 	Matrix Transpose() const;
 	Matrix Conjugation() const;
 	Matrix Hermite() const;

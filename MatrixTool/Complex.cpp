@@ -16,7 +16,9 @@ bool NearZero(double f)
 	return Near(f, 0);
 }
 
-Complex Complex::operator = (double fR)
+Complex::Complex(const ComplexIndex& rIndex) : m_fA(rIndex.m_fR* cos(rIndex.m_fTheta)), m_fB(rIndex.m_fR* sin(rIndex.m_fTheta)) {}
+
+Complex& Complex::operator = (double fR)
 {
 	return *this = Complex(fR);
 }
@@ -26,9 +28,11 @@ Complex Complex::operator + (const Complex& c)
 	return Complex(m_fA + c.m_fA, m_fB + c.m_fB);
 }
 
-Complex Complex::operator += (const Complex& c)
+Complex& Complex::operator += (const Complex& c)
 {
-	return (*this = *this + c);
+	m_fA += c.m_fA;
+	m_fB += c.m_fB;
+	return *this;
 }
 
 Complex Complex::operator * (const Complex& c)
@@ -36,23 +40,24 @@ Complex Complex::operator * (const Complex& c)
 	return Complex(m_fA * c.m_fA - m_fB * c.m_fB, m_fB * c.m_fA + m_fA * c.m_fB);
 }
 
+bool Complex::operator == (const Complex& c) const
+{
+	return Near(m_fA, c.m_fA) && Near(m_fB, c.m_fB);
+}
+
+bool Complex::operator != (const Complex& c) const
+{
+	return !(*this == c);
+}
+
 Complex Complex::Conjugation() const
 {
 	return Complex(m_fA, -m_fB);
 }
 
-ComplexIndex Complex::ToIndex() const
-{
-	double fR = sqrt(m_fA * m_fA + m_fB * m_fB);
-	double fA = atan2(m_fB, m_fA);
-	return ComplexIndex(fR, fA);
-}
-
 Complex Complex::Pow(double fN) const
 {
-	auto Index = ToIndex();
-	Index.Pow(fN);
-	return Index.ToComplex();
+	return ComplexIndex(*this).Pow(fN);
 }
 
 std::string Complex::ToString() const
@@ -88,22 +93,12 @@ std::string Complex::ToString() const
 
 Complex operator -(const Complex& c)
 {
-	Complex result = c;
-	result.m_fA = -result.m_fA;
-	result.m_fB = -result.m_fB;
-	return result;
+	return Complex(-c.m_fA, -c.m_fB);
 }
 
 ComplexIndex ComplexIndex::Pow(double fN) const
 {
-	double fR = pow(m_fR, fN);
-	double fAngle = m_fTheta * fN;
-	return ComplexIndex(fR, fAngle);
-}
-
-Complex ComplexIndex::ToComplex() const
-{
-	return Complex(m_fR * cos(m_fTheta), m_fR * sin(m_fTheta));
+	return ComplexIndex(pow(m_fR, fN), m_fTheta * fN);
 }
 
 std::string ComplexIndex::ToString() const
@@ -134,6 +129,17 @@ std::string ComplexIndex::ToString() const
 
 	return result;
 }
+
+bool ComplexIndex::operator == (const ComplexIndex& c) const
+{
+	return Near(m_fR, c.m_fR) && Near(m_fTheta, c.m_fTheta);
+}
+
+bool ComplexIndex::operator != (const ComplexIndex& c) const
+{
+	return !(*this == c);
+}
+
 
 ComplexIndex operator -(const ComplexIndex& rIndex)
 {
