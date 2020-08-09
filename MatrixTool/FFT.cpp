@@ -18,7 +18,7 @@ ComplexMatrix FFT::FFTMatrix(int n)
 	if (n == 2)
 		return FourierTransformMatrix(2);
 	int d = n / 2;
-	const auto F = FourierTransformMatrix(d);
+	const auto F = FFTMatrix(d);
 	const auto W = ComplexIndex(1, 2 * c_fPI / n);
 	const auto I = ComplexMatrix::Identity(d);
 	const auto D = FFT::DiagonalW(d, W);
@@ -32,6 +32,29 @@ ComplexMatrix FFT::FFTMatrix(int n)
 		F, Zero,
 		Zero, F
 	) * P;
+}
+
+ComplexMatrix FFT::FFTMatrix2(int n)
+{	
+	auto F = FourierTransformMatrix(2);
+	for (int i = 4; i <= n; i *= 2)
+	{
+		int d = i / 2;
+		const auto W = ComplexIndex(1, 2 * c_fPI / i);
+		const auto I = ComplexMatrix::Identity(d);
+		const auto D = FFT::DiagonalW(d, W);
+		const auto Zero = ComplexMatrix::Zero(d);
+		const auto P = FFT::ParityPermutationMatrix(i);
+
+		F = PartitionedMatrix<Complex>::Build(
+			I, D,
+			I, -D
+		) * PartitionedMatrix<Complex>::Build(
+			F, Zero,
+			Zero, F
+		) * P;
+	}
+	return F;
 }
 
 ComplexMatrix FFT::ParityPermutationMatrix(int n)
